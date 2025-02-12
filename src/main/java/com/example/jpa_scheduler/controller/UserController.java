@@ -22,14 +22,14 @@ public class UserController {
 
     @PostMapping("/signin")
     public ResponseEntity<SignInResponseDto> signin(@RequestBody SignInRequestDto dto) {
-        userService.signIn(dto.getEmail(), dto.getPassword());
-        return new ResponseEntity<>(HttpStatus.OK);
+        SignInResponseDto signInResponseDto = userService.signIn(dto.getEmail(), dto.getPassword());
+        return new ResponseEntity<>(signInResponseDto, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> showUserInfo(@PathVariable Long id) {
-        userService.findUserById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        UserResponseDto userResponseDto = userService.findUserById(id);
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
     @PostMapping("/logout")
@@ -39,10 +39,10 @@ public class UserController {
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<Void> updateUser(@PathVariable Long id, @RequestBody UpdateRequestDto dto) {
-        userService.updateUser(id, dto.getName(), dto.getPassword());
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody UpdateRequestDto dto) {
+        UserResponseDto userResponseDto = userService.updateUser(id, dto.getName(), dto.getPassword());
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

@@ -1,7 +1,9 @@
 package com.example.jpa_scheduler.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 @Table(name = "user")
 public class User extends BaseEntity{
@@ -23,6 +25,11 @@ public class User extends BaseEntity{
 
     public User(String email, String name, String password) {
         this.email = email;
+        this.name = name;
+        this.password = password;
+    }
+
+    public void updateUser(String name, String password) {
         this.name = name;
         this.password = password;
     }
