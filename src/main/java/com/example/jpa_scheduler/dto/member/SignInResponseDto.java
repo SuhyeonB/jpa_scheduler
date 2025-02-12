@@ -1,4 +1,4 @@
-package com.example.jpa_scheduler.dto.user;
+package com.example.jpa_scheduler.dto.member;
 
 import lombok.Getter;
 

@@ -1,7 +1,9 @@
 package com.example.jpa_scheduler.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 @Table(name = "schedule")
 public class Schedule extends BaseEntity{
@@ -12,8 +14,8 @@ public class Schedule extends BaseEntity{
 
     // user name
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(nullable = false)
     private String title;
