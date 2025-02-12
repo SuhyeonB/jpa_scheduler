@@ -18,4 +18,12 @@ public class User extends BaseEntity{
 
     @Column(nullable = false)
     private String password;    // encrypt
+
+    public User(){}
+
+    public User(String email, String name, String password) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+    }
 }
