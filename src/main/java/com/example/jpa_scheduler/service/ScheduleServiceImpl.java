@@ -48,10 +48,8 @@ public class ScheduleServiceImpl implements ScheduleService{
 
     @Override
     public List<ScheduleResponseDto> findByMember(Long memberId) {
-        return scheduleRepository.findAll()
-                .stream()
-                .filter(s->s.getMember().getId() == memberId)
-                .map(ScheduleResponseDto::toDto)
+        List<Schedule> schedules = scheduleRepository.findByMember_Id(memberId);
+        return schedules.stream().map(ScheduleResponseDto::toDto)
                 .toList();
     }
 

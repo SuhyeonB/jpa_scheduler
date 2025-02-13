@@ -2,6 +2,8 @@ package com.example.jpa_scheduler.controller;
 
 import com.example.jpa_scheduler.dto.member.*;
 import com.example.jpa_scheduler.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,25 +18,29 @@ public class MemberController {
     @PostMapping("/signup")
     public ResponseEntity<Void> signup(@RequestBody SignUpRequestDto dto) {
         memberService.signUp(dto.getEmail(), dto.getName(), dto.getPassword());
-        // redirect
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<SignInResponseDto> signin(@RequestBody SignInRequestDto dto) {
+    public ResponseEntity<SignInResponseDto> signin(@RequestBody SignInRequestDto dto, HttpServletRequest request) {
         SignInResponseDto signInResponseDto = memberService.signIn(dto.getEmail(), dto.getPassword());
+
+        HttpSession session = request.getSession();
+        session.setAttribute("loggedIn", signInResponseDto);
         return new ResponseEntity<>(signInResponseDto, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MemberResponseDto> showmemberInfo(@PathVariable Long id) {
+    public ResponseEntity<MemberResponseDto> showMemberInfo(@PathVariable Long id) {
         MemberResponseDto memberResponseDto = memberService.findMemberById(id);
         return new ResponseEntity<>(memberResponseDto, HttpStatus.OK);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(){
+    public ResponseEntity<Void> logout(HttpServletRequest request){
         // session 제거
+        HttpSession session = request.getSession(false);
+        if (session != null) session.invalidate();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
