@@ -9,6 +9,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +49,17 @@ public class ScheduleServiceImpl implements ScheduleService{
     }
 
     @Override
+    public Page<ScheduleResponseDto> findAllPaged(int size) {
+        int page = 10;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt"));
+
+        // 페이징 조회
+        Page<Schedule> schedulePage = scheduleRepository.findAllByOrderByUpdatedAtDesc(pageable);
+
+        return schedulePage.map(ScheduleResponseDto::toDto);
+    }
+
+    @Override
     public ScheduleResponseDto findById(Long id) {
         Schedule find = scheduleRepository.findByIdOrElseThrow(id);
 
@@ -64,7 +79,7 @@ public class ScheduleServiceImpl implements ScheduleService{
     public void updateSchedule(Long id, String title, String contents, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
-        if (session == null) {
+        if (session == null || session.getAttribute("loggedIn") == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED); // 작성자가 아님 = 수정 권한 없음
         }
         Long loggedId = (Long) session.getAttribute("loggedIn");
@@ -83,7 +98,7 @@ public class ScheduleServiceImpl implements ScheduleService{
     public void deleteSchedule(Long id, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
-        if (session == null) {
+        if (session == null || session.getAttribute("loggedIn") == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "need to log in");
         }
 

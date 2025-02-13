@@ -24,7 +24,7 @@ public class LoginFilter implements Filter {
         if(!isWhiteList(requestURI)){
             HttpSession session = httpRequest.getSession(false);
 
-            if (session == null || session.getAttribute("sessionKey") == null) {
+            if (session == null || session.getAttribute("loggedIn") == null) {
                 throw new RuntimeException("로그인 해주세요.");
             }
         }

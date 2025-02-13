@@ -4,6 +4,7 @@ import com.example.jpa_scheduler.dto.member.*;
 import com.example.jpa_scheduler.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Void> signup(@RequestBody SignUpRequestDto dto) {
+    public ResponseEntity<Void> signup(@Valid @RequestBody SignUpRequestDto dto) {
         memberService.signUp(dto.getEmail(), dto.getName(), dto.getPassword());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

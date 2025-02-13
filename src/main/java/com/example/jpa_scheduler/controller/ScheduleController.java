@@ -6,6 +6,7 @@ import com.example.jpa_scheduler.dto.schedule.UpdateScheduleDto;
 import com.example.jpa_scheduler.service.ScheduleService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class ScheduleController {
 
     @PostMapping
     public ResponseEntity<ScheduleResponseDto> createSchedule(
-            @RequestBody ScheduleRequestDto dto, HttpServletRequest request) {
+            @Valid @RequestBody ScheduleRequestDto dto, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
         if (session == null) {
@@ -52,7 +53,7 @@ public class ScheduleController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateSchedule (@PathVariable Long id, @RequestBody UpdateScheduleDto dto,
+    public ResponseEntity<Void> updateSchedule (@PathVariable Long id, @Valid @RequestBody UpdateScheduleDto dto,
                                                 HttpServletRequest request) {
         scheduleService.updateSchedule(id, dto.getTitle(), dto.getContents(), request);
         return new ResponseEntity<>(HttpStatus.OK);

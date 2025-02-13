@@ -2,6 +2,7 @@ package com.example.jpa_scheduler.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Entity
@@ -20,7 +21,8 @@ public class Schedule extends BaseEntity{
 
     // user name
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
+    @Setter
     private Member member;
 
     public Schedule(){}

@@ -1,5 +1,6 @@
 package com.example.jpa_scheduler.service;
 
+import com.example.jpa_scheduler.config.PasswordEncoder;
 import com.example.jpa_scheduler.dto.member.SignInResponseDto;
 import com.example.jpa_scheduler.dto.member.MemberResponseDto;
 import com.example.jpa_scheduler.entity.Member;
@@ -16,19 +17,21 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void signUp(String email, String name, String password) {
-        log.info("회원가입 요청: email={}, name={}", email, name);
-        Member member = new Member(email, name, password);
+
+        String encodedPassword = passwordEncoder.encode(password);
+        Member member = new Member(email, name, encodedPassword);
+
         memberRepository.save(member);
-        log.info("회원가입 완료: email={}", email);
     }
 
     @Override
     public SignInResponseDto signIn(String email, String password) {
         Member signedMember = memberRepository.findMemberByEmailOrElseThrow(email);
-        if (!signedMember.getPassword().equals(password)) {
+        if (!passwordEncoder.matches(password, signedMember.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Password does not match");
         }
         // session 설정
@@ -44,11 +47,13 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberResponseDto updateMember(Long id, String name, String password) {
         Member updatedMember = memberRepository.findMemberByIdOrElseThrow(id);
-        if (!updatedMember.getPassword().equals(password)) {
+        if (!passwordEncoder.matches(password, updatedMember.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Password does not match");
         }
-        updatedMember.updateMember(name, password);
-        return null;
+        String newEncodedPassword = passwordEncoder.encode(password);
+        updatedMember.updateMember(name, newEncodedPassword);
+
+        return new MemberResponseDto(updatedMember.getEmail(), updatedMember.getName());
     }
 
     @Override
