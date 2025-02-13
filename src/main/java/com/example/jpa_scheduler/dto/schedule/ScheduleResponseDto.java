@@ -2,6 +2,7 @@ package com.example.jpa_scheduler.dto.schedule;
 
 import com.example.jpa_scheduler.entity.Schedule;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 

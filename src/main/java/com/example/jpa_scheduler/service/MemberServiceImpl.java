@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
@@ -20,8 +21,10 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void signUp(String email, String name, String password) {
+
         String encodedPassword = passwordEncoder.encode(password);
         Member member = new Member(email, name, encodedPassword);
+
         memberRepository.save(member);
     }
 
