@@ -80,7 +80,7 @@ schedule과 별개로 작성한 유저를 구분하기 위해, `member`도 FK로
 로그인 성공
 ![로그인 성공](https://github.com/user-attachments/assets/d6ad6aa5-7c5f-4a5b-8ea3-73cc151208b4)
 로그인 성공 시, JSESSIONID가 쿠키에 생성됨.
-<br/>
+<br/><br/><br/>
 로그인 상태에서 일정 등록
 ![로그인한 상태에서  ppost](https://github.com/user-attachments/assets/88a65ba9-6635-4fa9-9926-35be8d2e1b9e)
 제목과 내용만 입력해도 HttpServletRequest의 Session을 통해 유저 정보가 자동으로 포함되어 등록됨.
