@@ -41,7 +41,7 @@ public class MemberController {
     public ResponseEntity<Void> logout(HttpServletRequest request){
         // session 제거
         HttpSession session = request.getSession(false);
-        if (session != null) session.invalidate();
+        if (session == null || session.getAttribute("loggedIn") == null) session.invalidate();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

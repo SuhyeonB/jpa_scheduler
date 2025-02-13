@@ -26,7 +26,7 @@ public class ScheduleController {
             @Valid @RequestBody ScheduleRequestDto dto, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
-        if (session == null) {
+        if (session == null || session.getAttribute("loggedIn") == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         Long loggedId = (Long) session.getAttribute("loggedIn");
