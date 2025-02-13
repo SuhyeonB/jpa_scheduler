@@ -1,7 +1,9 @@
 package com.example.jpa_scheduler.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 @Table(name = "schedule")
 public class Schedule extends BaseEntity{
@@ -10,14 +12,29 @@ public class Schedule extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // user name
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
     @Column(nullable = false)
     private String title;
 
     @Column(columnDefinition = "longtext")
     private String contents;
+
+    // user name
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    public Schedule(){}
+    public Schedule(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
+    public void updateSchedule(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
+    }
 }
