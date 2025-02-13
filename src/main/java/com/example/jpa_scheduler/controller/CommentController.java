@@ -44,6 +44,6 @@ public class CommentController {
     public ResponseEntity<Void> deleteComment(
             @PathVariable Long postId, @PathVariable Long id, HttpServletRequest request) {
         commentService.deleteComment(id, request);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
