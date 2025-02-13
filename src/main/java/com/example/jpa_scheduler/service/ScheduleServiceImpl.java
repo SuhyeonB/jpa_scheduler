@@ -9,6 +9,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +46,17 @@ public class ScheduleServiceImpl implements ScheduleService{
                 .stream()
                 .map(ScheduleResponseDto::toDto)
                 .toList();
+    }
+
+    @Override
+    public Page<ScheduleResponseDto> findAllPaged(int size) {
+        int page = 10;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt"));
+
+        // 페이징 조회
+        Page<Schedule> schedulePage = scheduleRepository.findAllByOrderByUpdatedAtDesc(pageable);
+
+        return schedulePage.map(ScheduleResponseDto::toDto);
     }
 
     @Override
