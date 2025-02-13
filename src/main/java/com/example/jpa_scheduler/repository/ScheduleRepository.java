@@ -12,5 +12,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
         return findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist"));
     }
 
-    List findByMember_Id(Long memberId);
+    List<Schedule> findByMember_Id(Long memberId);
 }

@@ -5,13 +5,18 @@ import com.example.jpa_scheduler.entity.Member;
 import com.example.jpa_scheduler.entity.Schedule;
 import com.example.jpa_scheduler.repository.MemberRepository;
 import com.example.jpa_scheduler.repository.ScheduleRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ScheduleServiceImpl implements ScheduleService{
@@ -19,6 +24,7 @@ public class ScheduleServiceImpl implements ScheduleService{
     private final ScheduleRepository scheduleRepository;
 
     @Override
+    @Transactional
     public ScheduleResponseDto save(String title, String contents, Long memberId) {
         Schedule schedule = new Schedule(title, contents);
 
@@ -54,21 +60,38 @@ public class ScheduleServiceImpl implements ScheduleService{
     }
 
     @Override
-    public void updateSchedule(Long id, String title, String contents) {
+    @Transactional
+    public void updateSchedule(Long id, String title, String contents, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if (session == null || session.getAttribute("loggedIn") == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED); // 작성자가 아님 = 수정 권한 없음
+        }
+        Long loggedId = (Long) session.getAttribute("loggedIn");
         Schedule find = scheduleRepository.findByIdOrElseThrow(id);
 
         // user가 로그인 되어 있는가 (chain)
         // 로그인된 사용자가 작성자와 같은가?
-        if (!logged.isequal()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "does not match with writer");
+        if (!find.getMember().getId().equals(loggedId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "only writer can update");
         }
 
         find.updateSchedule(title, contents);
     }
 
     @Override
-    public void deleteSchedule(Long id) {
+    public void deleteSchedule(Long id, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if (session == null || session.getAttribute("loggedIn") == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "need to log in");
+        }
+
+        Long loggedId = (Long) session.getAttribute("loggedIn");
         Schedule find = scheduleRepository.findByIdOrElseThrow(id);
+        if (!find.getMember().getId().equals(loggedId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "only writer can delete");
+        }
 
         scheduleRepository.delete(find);
     }

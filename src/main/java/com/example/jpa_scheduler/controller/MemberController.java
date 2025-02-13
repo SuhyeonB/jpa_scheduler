@@ -26,7 +26,7 @@ public class MemberController {
         SignInResponseDto signInResponseDto = memberService.signIn(dto.getEmail(), dto.getPassword());
 
         HttpSession session = request.getSession();
-        session.setAttribute("loggedIn", signInResponseDto);
+        session.setAttribute("loggedIn", signInResponseDto.getId());
         return new ResponseEntity<>(signInResponseDto, HttpStatus.OK);
     }
 
@@ -45,7 +45,7 @@ public class MemberController {
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<MemberResponseDto> updatemember(@PathVariable Long id, @RequestBody UpdateRequestDto dto) {
+    public ResponseEntity<MemberResponseDto> updateMember(@PathVariable Long id, @RequestBody UpdateRequestDto dto) {
         MemberResponseDto memberResponseDto = memberService.updateMember(id, dto.getName(), dto.getPassword());
 
         return new ResponseEntity<>(memberResponseDto, HttpStatus.OK);
@@ -56,5 +56,4 @@ public class MemberController {
         memberService.deleteMember(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }
